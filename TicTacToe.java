@@ -1,4 +1,4 @@
-import java.util.Random;
+import java.util.*;
 
 class TicTacToe {
 
@@ -6,21 +6,36 @@ class TicTacToe {
 
         //creating an object of PlayingTTT class.
         final PlayingTTT play = new PlayingTTT();
+        Scanner sc = new Scanner(System.in);
 
         //creating the board as an 3*3 array
         final String[][] board = new String[3][3];
-        
+
         //calling the function to set the re-set the board.
         play.settingBoard(board);
 
-        String firstPlay = "";
+        String player;
+        String cpu;
 
-        //calling a function to decide who will play first.
+        //calling a function to decide who will play first amd there symbol choice.
         if(play.decidingToss()){
-            firstPlay = firstPlay+"player";
+            System.out.println("Enter a character between X or O");
+            player = sc.next();
+            if(player == "X"){
+                cpu = "O";
+            }else{
+                cpu = "X";
+            }
         }else{
-            firstPlay = firstPlay+"computer";
+            if(play.decidingToss()){
+                cpu = "O";
+                player = "X";
+            }else{
+                cpu = "X";
+                player = "O";
+            }
         }
+        sc.close();
     }
 }
 
