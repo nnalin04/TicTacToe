@@ -14,25 +14,25 @@ class TicTacToe {
         //calling the function to set the re-set the board.
         play.settingBoard(board);
 
-        String playerChar;
-        String compChar;
+        String player;
+        String cpu;
 
         //calling a function to decide who will play first amd there symbol choice.
         if(play.decidingToss()){
             System.out.println("Enter a character between X or O");
-            playerChar = sc.next();
-            if(playerChar == "X"){
-                compChar = "O";
+            player = sc.next();
+            if(player == "X"){
+                cpu = "O";
             }else{
-                compChar = "X";
+                cpu = "X";
             }
         }else{
             if(play.decidingToss()){
-                compChar = "O";
-                playerChar = "X";
+                cpu = "O";
+                player = "X";
             }else{
-                compChar = "X";
-                playerChar = "O";
+                cpu = "X";
+                player = "O";
             }
         }
         sc.close();
