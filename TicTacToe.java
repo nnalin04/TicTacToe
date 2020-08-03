@@ -22,8 +22,6 @@ class TicTacToe {
         List<Integer> cpuPosition = new ArrayList<>();
         List<Integer> occupiedPosition = new ArrayList<>();
 
-        String[] SymbolArray = new String[2];
-
         // calling the function to set the re-set the board.
         play.settingBoard(board);
 
@@ -35,6 +33,7 @@ class TicTacToe {
         boolean cpuResult = false;
 
         // calling a function to choose the player and cpu symbol.
+        String[] SymbolArray = new String[2];
         SymbolArray = play.choosingSymbol(toss, sc);
         String playerSymbol = SymbolArray[0];
         String cpuSymbol = SymbolArray[1];
@@ -51,12 +50,19 @@ class TicTacToe {
                 PlayerPosition.add(index);
                 board = play.settingSymbol(board, playerSymbol, index);
                 playerResult = play.checkForWin(PlayerPosition);
-                if(playerResult){
+                if (playerResult) {
                     System.out.println("Player Wins");
                 }
                 toss = false;
             } else {
-                // cpuResult = play.checkForWin(board);
+                int index = cpuMove(occupiedPosition);
+                cpuPosition.add(index);
+                occupiedPosition.add(index);
+                board = play.settingSymbol(board, cpuSymbol, index);
+                cpuResult = play.checkForWin(cpuPosition);
+                if (cpuResult) {
+                    System.out.println("cpu Wins");
+                }
                 toss = true;
             }
 
@@ -72,7 +78,16 @@ class TicTacToe {
         sc.close();
     }
 
-    private static int checkingIfPresent(Scanner sc, int index, List<Integer> occupiedPosition) {
+    private static int cpuMove(List<Integer> occupiedPosition) {
+        Random r = new Random();
+        int index = r.nextInt(9)+1;
+        if(occupiedPosition.contains(index)){
+            cpuMove(occupiedPosition);
+        }
+		return index;
+	}
+
+	private static int checkingIfPresent(Scanner sc, int index, List<Integer> occupiedPosition) {
         if (occupiedPosition.contains(index)) {
             System.out.println("enter a different position " + index + " is already present");
             index = sc.nextInt();
@@ -147,7 +162,7 @@ class PlayingTTT {
         return false;
     }
 
-    public boolean checkRowsForWin(List<Integer> board) {
+    private boolean checkRowsForWin(List<Integer> board) {
         List<Integer> row0 = new ArrayList<>();
         row0.add(1);
         row0.add(2);
@@ -166,7 +181,7 @@ class PlayingTTT {
         return false;
     }
 
-    public boolean checkColumnsForWin(List<Integer> board) {
+    private boolean checkColumnsForWin(List<Integer> board) {
         List<Integer> col0 = new ArrayList<>();
         col0.add(1);
         col0.add(4);
@@ -185,7 +200,7 @@ class PlayingTTT {
         return false;
     }
 
-    public boolean checkDiagonalsForWin(List<Integer> board) {
+    private boolean checkDiagonalsForWin(List<Integer> board) {
         List<Integer> dig0 = new ArrayList<>();
         dig0.add(1);
         dig0.add(5);
