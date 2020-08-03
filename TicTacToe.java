@@ -40,6 +40,7 @@ class TicTacToe {
 
         // playing till either of the competitor win or tie.
         do {
+            //if toss is true it will be player turn.
             if (toss) {
 
                 // calling a function to display the board.
