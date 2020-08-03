@@ -34,34 +34,49 @@ class TicTacToe {
 
         // calling a function to choose the player and cpu symbol.
         String[] SymbolArray = new String[2];
-        SymbolArray = play.choosingSymbol(toss, sc);
+        SymbolArray = play.choosingSymbol(toss, sc, SymbolArray);
         String playerSymbol = SymbolArray[0];
         String cpuSymbol = SymbolArray[1];
 
         // playing till either of the competitor win or tie.
         do {
             if (toss) {
+
                 // calling a function to display the board.
                 play.displayBoard(board);
-                System.out.println("enter a the position you want to place your symbol, between 1-9");
-                int index = sc.nextInt();
-                index = checkingIfPresent(sc, index, occupiedPosition);
+
+                //calling a function to get cell index from the user.
+                int index = checkingIfPresent(sc, occupiedPosition);
+
                 occupiedPosition.add(index);
                 PlayerPosition.add(index);
+
+                //calling a function for setting the symbol at the given index.
                 board = play.settingSymbol(board, playerSymbol, index);
+                
+                //calling a function to check for the winning condition.
                 playerResult = play.checkForWin(PlayerPosition);
                 if (playerResult) {
                     System.out.println("Player Wins");
+                    break;
                 }
                 toss = false;
+
             } else {
+                //calling a function to get cell index from the cpu.
                 int index = cpuMove(occupiedPosition);
+
                 cpuPosition.add(index);
                 occupiedPosition.add(index);
+
+                //calling a function for setting the symbol at the given index.
                 board = play.settingSymbol(board, cpuSymbol, index);
+
+                //calling a function to check for the winning condition.
                 cpuResult = play.checkForWin(cpuPosition);
                 if (cpuResult) {
                     System.out.println("cpu Wins");
+                    break;
                 }
                 toss = true;
             }
@@ -78,20 +93,27 @@ class TicTacToe {
         sc.close();
     }
 
-    private static int cpuMove(List<Integer> occupiedPosition) {
-        Random r = new Random();
-        int index = r.nextInt(9)+1;
-        if(occupiedPosition.contains(index)){
-            cpuMove(occupiedPosition);
-        }
-		return index;
-	}
-
-	private static int checkingIfPresent(Scanner sc, int index, List<Integer> occupiedPosition) {
-        if (occupiedPosition.contains(index)) {
+    /**
+     * function to get the cell index from the user.
+     */
+    private static int checkingIfPresent(Scanner sc, List<Integer> occupiedPosition) {
+        System.out.println("enter a the position you want to place your symbol, between 1-9");
+        int index = sc.nextInt();
+        while (occupiedPosition.contains(index)) {
             System.out.println("enter a different position " + index + " is already present");
             index = sc.nextInt();
-            checkingIfPresent(sc, index, occupiedPosition);
+        }
+        return index;
+    }
+
+    /**
+     * function to get the cell index from the computer.
+     */
+    private static int cpuMove(List<Integer> occupiedPosition) {
+        Random r = new Random();
+        int index = r.nextInt(9) + 1;
+        while (occupiedPosition.contains(index)) {
+            index = r.nextInt(9) + 1;
         }
         return index;
     }
@@ -99,7 +121,9 @@ class TicTacToe {
 
 class PlayingTTT {
 
-    // function to re-set the board.
+    /**
+     * function to get the cell index from the user.
+     */
     public void settingBoard(String[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -108,35 +132,43 @@ class PlayingTTT {
         }
     }
 
-    public String[] choosingSymbol(boolean toss, Scanner sc) {
-        String[] arr = new String[2];
+    /**
+     * function to chose a symbol for the computer or the user.
+     */
+    public String[] choosingSymbol(boolean toss, Scanner sc, String[] symbolArray) {
         if (toss) {
             System.out.println("Enter a symbol");
-            arr[0] = sc.nextLine();
-            if (arr[0] == "X") {
-                arr[1] = "O";
+            String symbol = sc.nextLine();
+            if (symbol == "X") {
+                symbolArray[0] = "X";
+                symbolArray[1] = "O";
             } else {
-                arr[1] = "X";
+                symbolArray[0] = "X";
+                symbolArray[1] = "X";
             }
         } else {
             if (decidingToss()) {
-                arr[0] = "X";
-                arr[1] = "O";
+                symbolArray[0] = "X";
+                symbolArray[1] = "O";
             } else {
-                arr[0] = "O";
-                arr[1] = "X";
+                symbolArray[0] = "O";
+                symbolArray[1] = "X";
             }
         }
-        return arr;
+        return symbolArray;
     }
 
-    // function to create a random toss
+    /**
+     * function to create a random toss
+     */
     public boolean decidingToss() {
         Random r = new Random();
         return r.nextBoolean();
     }
 
-    // function to display the board.
+    /**
+     * function to display the board.
+     */
     public void displayBoard(String[][] board) {
         String str = "";
         for (int i = 0; i < board.length; i++) {
@@ -155,6 +187,9 @@ class PlayingTTT {
         System.out.println("\n" + str);
     }
 
+    /**
+     * function to check for the winning condition.
+     */
     public boolean checkForWin(List<Integer> board) {
         if (checkRowsForWin(board) || checkColumnsForWin(board) || checkDiagonalsForWin(board)) {
             return true;
@@ -162,6 +197,9 @@ class PlayingTTT {
         return false;
     }
 
+    /**
+     * function to match winning condition for row.
+     */
     private boolean checkRowsForWin(List<Integer> board) {
         List<Integer> row0 = new ArrayList<>();
         row0.add(1);
@@ -181,6 +219,9 @@ class PlayingTTT {
         return false;
     }
 
+    /**
+     * function to match winning condition for col.
+     */
     private boolean checkColumnsForWin(List<Integer> board) {
         List<Integer> col0 = new ArrayList<>();
         col0.add(1);
@@ -200,21 +241,27 @@ class PlayingTTT {
         return false;
     }
 
+    /**
+     * function to match winning condition for diagonal.
+     */
     private boolean checkDiagonalsForWin(List<Integer> board) {
         List<Integer> dig0 = new ArrayList<>();
         dig0.add(1);
         dig0.add(5);
         dig0.add(9);
         List<Integer> dig1 = new ArrayList<>();
-        dig1.add(4);
+        dig1.add(3);
         dig1.add(5);
-        dig1.add(6);
+        dig1.add(7);
         if (board.containsAll(dig0) || board.containsAll(dig1)) {
             return true;
         }
         return false;
     }
 
+    /**
+     * function to set the board to ' ' as every element.
+     */
     public boolean checkForDraw(String[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -226,6 +273,9 @@ class PlayingTTT {
         return true;
     }
 
+    /**
+     * function to to set symbol as per players requirement.
+     */
     public String[][] settingSymbol(String[][] board, String symbol, int index) {
         index -= 1;
         int x = (int) Math.floor(index / 3);
