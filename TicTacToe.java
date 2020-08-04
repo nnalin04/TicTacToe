@@ -12,7 +12,7 @@ class TicTacToe {
         Scanner sc = new Scanner(System.in);
 
         // calling the function to play the game.
-        playingTheGame(board, play, sc);
+        initializeTheGame(board, play, sc);
 
         sc.close();
     }
@@ -25,7 +25,7 @@ class TicTacToe {
      * @param play  - object of the PlayingTTT class to use its method.
      * @param sc    - object of scanner class to take input from the user.
      */
-    public static void playingTheGame(String[][] board, PlayingTTT play, Scanner sc) {
+    public static void initializeTheGame(String[][] board, PlayingTTT play, Scanner sc) {
 
         // list of index for player position cpu position and position occupied by both
         // of them.
@@ -72,7 +72,6 @@ class TicTacToe {
                     System.out.println("\nPlayer Wins");
                     break;
                 }
-                toss = false;
 
             } else {
                 // calling a function to get cell index from the cpu.
@@ -90,14 +89,14 @@ class TicTacToe {
                     System.out.println("\ncpu Wins");
                     break;
                 }
-                toss = true;
             }
 
             // checking for draw.
-            if (play.checkForDraw(board)) {
+            if (occupiedPosition.size() == 9) {
                 System.out.println("\nIt's a draw");
                 break;
             }
+            toss = !toss;
         } while (playerResult == false && cpuResult == false);
 
         play.displayBoard(board);
@@ -221,12 +220,11 @@ class TicTacToe {
                 { 3, 5, 7 } };
 
         // variables to calculate index and count the number of matching element.
-        int k = 0;
-        List<Integer> unMatched = new ArrayList<>();
+        int k = 0;        
 
         while (k < 8) {
             int matchCount = 0;
-            unMatched.clear();
+            List<Integer> unMatched = new ArrayList<>();
             for (int i = 0; i < winning[k].length; i++) {
                 if (occupiedPosition.contains(winning[k][i])) {
                     if (position.contains(winning[k][i])) {
@@ -330,70 +328,31 @@ class PlayingTTT {
      * @param board - board with the index used as the game board.
      */
     public boolean checkForWin(List<Integer> board) {
-        if (checkRowsForWin(board) || checkColumnsForWin(board) || checkDiagonalsForWin(board)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * function to match winning condition for row.
-     * 
-     * @param board - board with the indexes used as the game board.
-     */
-    private boolean checkRowsForWin(List<Integer> board) {
         List<Integer> row0 = new ArrayList<>(Arrays.asList(1, 2, 3));
         List<Integer> row1 = new ArrayList<>(Arrays.asList(4, 5, 6));
         List<Integer> row2 = new ArrayList<>(Arrays.asList(7, 8, 9));
-        if (board.containsAll(row0) || board.containsAll(row1) || board.containsAll(row2)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * function to match winning condition for col.
-     * 
-     * @param board - board with the indexes used as the game board.
-     */
-    private boolean checkColumnsForWin(List<Integer> board) {
         List<Integer> col0 = new ArrayList<>(Arrays.asList(1, 4, 7));
         List<Integer> col1 = new ArrayList<>(Arrays.asList(2, 5, 8));
         List<Integer> col2 = new ArrayList<>(Arrays.asList(3, 6, 9));
-        if (board.containsAll(col0) || board.containsAll(col1) || board.containsAll(col2)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * function to match winning condition for diagonal.
-     * 
-     * @param board - board with the indexes used as the game board.
-     */
-    private boolean checkDiagonalsForWin(List<Integer> board) {
         List<Integer> dig0 = new ArrayList<>(Arrays.asList(1, 5, 9));
         List<Integer> dig1 = new ArrayList<>(Arrays.asList(3, 5, 7));
-        if (board.containsAll(dig0) || board.containsAll(dig1)) {
-            return true;
-        }
-        return false;
-    }
 
-    /**
-     * function to set the board to ' ' as every element.
-     * 
-     * @param board - board with the cells block used as the game board.
-     */
-    public boolean checkForDraw(String[][] board) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (board[i][j] == " ") {
-                    return false;
-                }
+        List<List<Integer>> win = new ArrayList<>();
+        win.add(row0);
+        win.add(row1);
+        win.add(row2);
+        win.add(col0);
+        win.add(col1);
+        win.add(col2);
+        win.add(dig0);
+        win.add(dig1);
+
+        for(int i=0;i<win.size();i++){
+            if(board.containsAll(win.get(i))){
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
