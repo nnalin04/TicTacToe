@@ -27,6 +27,8 @@ class TicTacToe {
      */
     public static void playingTheGame(String[][] board, PlayingTTT play, Scanner sc) {
 
+        // list of index for player position cpu position and position occupied by both
+        // of them.
         List<Integer> PlayerPosition = new ArrayList<>();
         List<Integer> cpuPosition = new ArrayList<>();
         List<Integer> occupiedPosition = new ArrayList<>();
@@ -164,7 +166,7 @@ class TicTacToe {
             if (firstIndex != index) {
                 return index;
             }
-        }        
+        }
         return index;
     }
 
@@ -340,9 +342,9 @@ class PlayingTTT {
      * @param board - board with the indexes used as the game board.
      */
     private boolean checkRowsForWin(List<Integer> board) {
-        List<Integer> row0 = new ArrayList<>(Arrays.asList(1,2,3));
-        List<Integer> row1 = new ArrayList<>(Arrays.asList(4,5,6));
-        List<Integer> row2 = new ArrayList<>(Arrays.asList(7,8,9));
+        List<Integer> row0 = new ArrayList<>(Arrays.asList(1, 2, 3));
+        List<Integer> row1 = new ArrayList<>(Arrays.asList(4, 5, 6));
+        List<Integer> row2 = new ArrayList<>(Arrays.asList(7, 8, 9));
         if (board.containsAll(row0) || board.containsAll(row1) || board.containsAll(row2)) {
             return true;
         }
@@ -355,9 +357,9 @@ class PlayingTTT {
      * @param board - board with the indexes used as the game board.
      */
     private boolean checkColumnsForWin(List<Integer> board) {
-        List<Integer> col0 = new ArrayList<>(Arrays.asList(1,4,7));
-        List<Integer> col1 = new ArrayList<>(Arrays.asList(2,5,8));
-        List<Integer> col2 = new ArrayList<>(Arrays.asList(3,6,9));
+        List<Integer> col0 = new ArrayList<>(Arrays.asList(1, 4, 7));
+        List<Integer> col1 = new ArrayList<>(Arrays.asList(2, 5, 8));
+        List<Integer> col2 = new ArrayList<>(Arrays.asList(3, 6, 9));
         if (board.containsAll(col0) || board.containsAll(col1) || board.containsAll(col2)) {
             return true;
         }
@@ -370,8 +372,8 @@ class PlayingTTT {
      * @param board - board with the indexes used as the game board.
      */
     private boolean checkDiagonalsForWin(List<Integer> board) {
-        List<Integer> dig0 = new ArrayList<>(Arrays.asList(1,5,9));
-        List<Integer> dig1 = new ArrayList<>(Arrays.asList(3,5,7));
+        List<Integer> dig0 = new ArrayList<>(Arrays.asList(1, 5, 9));
+        List<Integer> dig1 = new ArrayList<>(Arrays.asList(3, 5, 7));
         if (board.containsAll(dig0) || board.containsAll(dig1)) {
             return true;
         }
