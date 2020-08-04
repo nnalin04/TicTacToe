@@ -125,7 +125,7 @@ class TicTacToe {
      * @param playerPosition   - index's of the position used by the user.
      * @param position         - index's of the position used by the CPU.
      */
-    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> PlayerPosition, List<Integer> position) {
+    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> cpuPosition) {
 
         Random r = new Random();
         int index = r.nextInt(9) + 1;
@@ -135,7 +135,14 @@ class TicTacToe {
 
         int firstIndex = index;
 
-        index = possibleBestPosition(position, occupiedPosition, index);
+        //calling a function to get a winning chance.
+        index = possibleBestPosition(cpuPosition, occupiedPosition, index);
+        if (firstIndex != index) {
+            return index;
+        }
+
+        //calling a function to stop my opponent from winning.
+        index = possibleBestPosition(playerPosition, occupiedPosition, index);
         if (firstIndex != index) {
             return index;
         }
