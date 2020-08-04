@@ -37,15 +37,15 @@ class TicTacToe {
         // calling a function to decide who will play first amd there symbol choice.
         boolean toss = play.decidingToss();
 
-        // setting winning condition for both opponents.
-        boolean playerResult = false;
-        boolean cpuResult = false;
-
         // calling a function to choose the player and cpu symbol.
         String[] SymbolArray = new String[2];
         SymbolArray = play.choosingSymbol(toss, sc, SymbolArray);
         String playerSymbol = SymbolArray[0];
         String cpuSymbol = SymbolArray[1];
+
+        // setting winning condition for both opponents.
+        boolean playerResult = false;
+        boolean cpuResult = false;
 
         // playing till either of the competitor win or tie.
         do {
