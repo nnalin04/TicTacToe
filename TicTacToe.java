@@ -21,7 +21,7 @@ class TicTacToe {
     /**
      * function to play the game.
      * 
-     * @param board - it is the board with the index used as the game board.
+     * @param board - board with the index used as the game board.
      * @param play  - object of the PlayingTTT class to use its method.
      * @param sc    - object of scanner class to take input from the user.
      */
@@ -188,6 +188,8 @@ class PlayingTTT {
 
     /**
      * function to get the cell index from the user.
+     * 
+     * @param board - board with the index used as the game board.
      */
     public void settingBoard(String[][] board) {
         for (int i = 0; i < board.length; i++) {
@@ -199,6 +201,10 @@ class PlayingTTT {
 
     /**
      * function to chose a symbol for the computer or the user.
+     * 
+     * @param toss        - decide who will chose the first symbol.
+     * @param sc          - object of scanner class to take input from the user.
+     * @param symbolArray - array to take symbol as an input.
      */
     public String[] choosingSymbol(boolean toss, Scanner sc, String[] symbolArray) {
         if (toss) {
@@ -234,6 +240,8 @@ class PlayingTTT {
 
     /**
      * function to display the board.
+     * 
+     * @param board - board with the cells block used as the game board.
      */
     public void displayBoard(String[][] board) {
         String str = "";
@@ -255,6 +263,8 @@ class PlayingTTT {
 
     /**
      * function to check for the winning condition.
+     * 
+     * @param board - board with the index used as the game board.
      */
     public boolean checkForWin(List<Integer> board) {
         if (checkRowsForWin(board) || checkColumnsForWin(board) || checkDiagonalsForWin(board)) {
@@ -265,6 +275,8 @@ class PlayingTTT {
 
     /**
      * function to match winning condition for row.
+     * 
+     * @param board - board with the indexes used as the game board.
      */
     private boolean checkRowsForWin(List<Integer> board) {
         List<Integer> row0 = new ArrayList<>();
@@ -287,6 +299,8 @@ class PlayingTTT {
 
     /**
      * function to match winning condition for col.
+     * 
+     * @param board - board with the indexes used as the game board.
      */
     private boolean checkColumnsForWin(List<Integer> board) {
         List<Integer> col0 = new ArrayList<>();
@@ -309,6 +323,8 @@ class PlayingTTT {
 
     /**
      * function to match winning condition for diagonal.
+     * 
+     * @param board - board with the indexes used as the game board.
      */
     private boolean checkDiagonalsForWin(List<Integer> board) {
         List<Integer> dig0 = new ArrayList<>();
@@ -327,6 +343,8 @@ class PlayingTTT {
 
     /**
      * function to set the board to ' ' as every element.
+     * 
+     * @param board - board with the cells block used as the game board.
      */
     public boolean checkForDraw(String[][] board) {
         for (int i = 0; i < board.length; i++) {
@@ -341,6 +359,10 @@ class PlayingTTT {
 
     /**
      * function to to set symbol as per players requirement.
+     * 
+     * @param board - board with the cells block used as the game board.
+     * @param symbol - a letter which is to be set on board.
+     * @param index - place where the symbol will be set.
      */
     public String[][] settingSymbol(String[][] board, String symbol, int index) {
         index -= 1;
