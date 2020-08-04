@@ -28,7 +28,7 @@ class TicTacToe {
     public static void playingTheGame(String[][] board, PlayingTTT play, Scanner sc) {
 
         List<Integer> PlayerPosition = new ArrayList<>();
-        List<Integer> position = new ArrayList<>();
+        List<Integer> cpuPosition = new ArrayList<>();
         List<Integer> occupiedPosition = new ArrayList<>();
 
         // calling the function to set the re-set the board.
@@ -61,32 +61,31 @@ class TicTacToe {
                 occupiedPosition.add(index);
                 PlayerPosition.add(index);
 
-                // calling a function for setting the symbol at the given index.
+                // calling a function for setting the symbol at the given index on the board.
                 board = play.settingSymbol(board, playerSymbol, index);
 
                 // calling a function to check for the winning condition.
                 playerResult = play.checkForWin(PlayerPosition);
                 if (playerResult) {
-                    System.out.println("Player Wins");
+                    System.out.println("\nPlayer Wins");
                     break;
                 }
                 toss = false;
 
             } else {
                 // calling a function to get cell index from the cpu.
-                int index = cpuMove(occupiedPosition, PlayerPosition, position);
+                int index = cpuMove(occupiedPosition, PlayerPosition, cpuPosition);
 
-                position.add(index);
+                cpuPosition.add(index);
                 occupiedPosition.add(index);
 
-                // calling a function for setting the symbol at the given index.
+                // calling a function for setting the symbol at the given index on the board.
                 board = play.settingSymbol(board, cpuSymbol, index);
 
                 // calling a function to check for the winning condition.
-                cpuResult = play.checkForWin(position);
+                cpuResult = play.checkForWin(cpuPosition);
                 if (cpuResult) {
-                    System.out.println("cpu Wins");
-                    System.out.println(position);
+                    System.out.println("\ncpu Wins");
                     break;
                 }
                 toss = true;
@@ -94,7 +93,7 @@ class TicTacToe {
 
             // checking for draw.
             if (play.checkForDraw(board)) {
-                System.out.println("It's a draw");
+                System.out.println("\nIt's a draw");
                 break;
             }
         } while (playerResult == false && cpuResult == false);
@@ -128,10 +127,10 @@ class TicTacToe {
     private static int cpuMove(List<Integer> occupiedPosition, List<Integer> playerPosition,
             List<Integer> cpuPosition) {
 
-        int index = generateRandom(9) + 1;
-        while (occupiedPosition.contains(index)) {
-            index = generateRandom(9) + 1;
-        }
+        int index = 0;
+        List<Integer> random = new ArrayList<>();
+        List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
+        List<Integer> side = new ArrayList<>(Arrays.asList(2, 4, 6, 8));
 
         int firstIndex = index;
 
@@ -148,15 +147,24 @@ class TicTacToe {
         }
 
         // calling a function to get a corner index if not filled.
-        index = possibleCornerPosition(occupiedPosition, index);
-        if (firstIndex != index) {
-            return index;
+        while (occupiedPosition.containsAll(corner) == false) {
+            index = possiblePosition(occupiedPosition, random, index, corner);
+            if (firstIndex != index) {
+                return index;
+            }
         }
 
-        if(occupiedPosition.contains(5) == false){
+        if (occupiedPosition.contains(5) == false) {
             return 5;
         }
 
+        // calling a function to get a corner index if not filled.
+        while (occupiedPosition.containsAll(corner) == false) {
+            index = possiblePosition(occupiedPosition, random, index, side);
+            if (firstIndex != index) {
+                return index;
+            }
+        }        
         return index;
     }
 
@@ -170,24 +178,31 @@ class TicTacToe {
         return r.nextInt(maxRandom);
     }
 
-    private static int possibleCornerPosition(List<Integer> occupiedPosition, int index) {
+    /**
+     * function to decide in index for corner or side.
+     * 
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param random           - list of random index for corner and side.
+     * @param index            - given index.
+     * @param cornerOrIndex    - decide which to check position for.
+     */
+    private static int possiblePosition(List<Integer> occupiedPosition, List<Integer> random, int index,
+            List<Integer> toCompare) {
 
-        int[] corner = { 1, 3, 7, 9 };
-        List<Integer> random = new ArrayList<>();
+        random.clear();
 
-        while (random.size() != 4) {
+        while (random.size() <= 4) {
             int r = generateRandom(4);
             while (random.contains(r)) {
                 r = generateRandom(4);
             }
-            if (occupiedPosition.contains(corner[r])) {
+            if (occupiedPosition.contains(toCompare.get(r))) {
                 random.add(r);
                 break;
             } else {
-                return corner[r];
+                return toCompare.get(r);
             }
         }
-
         return index;
     }
 
@@ -210,7 +225,6 @@ class TicTacToe {
         while (k < 8) {
             int matchCount = 0;
             unMatched.clear();
-
             for (int i = 0; i < winning[k].length; i++) {
                 if (occupiedPosition.contains(winning[k][i])) {
                     if (position.contains(winning[k][i])) {
@@ -220,7 +234,6 @@ class TicTacToe {
                     unMatched.add(winning[k][i]);
                 }
             }
-
             if (matchCount == 2 && unMatched.size() == 1) {
                 index = unMatched.get(0);
                 break;
@@ -327,18 +340,9 @@ class PlayingTTT {
      * @param board - board with the indexes used as the game board.
      */
     private boolean checkRowsForWin(List<Integer> board) {
-        List<Integer> row0 = new ArrayList<>();
-        row0.add(1);
-        row0.add(2);
-        row0.add(3);
-        List<Integer> row1 = new ArrayList<>();
-        row1.add(4);
-        row1.add(5);
-        row1.add(6);
-        List<Integer> row2 = new ArrayList<>();
-        row2.add(7);
-        row2.add(8);
-        row2.add(9);
+        List<Integer> row0 = new ArrayList<>(Arrays.asList(1,2,3));
+        List<Integer> row1 = new ArrayList<>(Arrays.asList(4,5,6));
+        List<Integer> row2 = new ArrayList<>(Arrays.asList(7,8,9));
         if (board.containsAll(row0) || board.containsAll(row1) || board.containsAll(row2)) {
             return true;
         }
@@ -351,18 +355,9 @@ class PlayingTTT {
      * @param board - board with the indexes used as the game board.
      */
     private boolean checkColumnsForWin(List<Integer> board) {
-        List<Integer> col0 = new ArrayList<>();
-        col0.add(1);
-        col0.add(4);
-        col0.add(7);
-        List<Integer> col1 = new ArrayList<>();
-        col1.add(2);
-        col1.add(5);
-        col1.add(8);
-        List<Integer> col2 = new ArrayList<>();
-        col2.add(3);
-        col2.add(6);
-        col2.add(9);
+        List<Integer> col0 = new ArrayList<>(Arrays.asList(1,4,7));
+        List<Integer> col1 = new ArrayList<>(Arrays.asList(2,5,8));
+        List<Integer> col2 = new ArrayList<>(Arrays.asList(3,6,9));
         if (board.containsAll(col0) || board.containsAll(col1) || board.containsAll(col2)) {
             return true;
         }
@@ -375,14 +370,8 @@ class PlayingTTT {
      * @param board - board with the indexes used as the game board.
      */
     private boolean checkDiagonalsForWin(List<Integer> board) {
-        List<Integer> dig0 = new ArrayList<>();
-        dig0.add(1);
-        dig0.add(5);
-        dig0.add(9);
-        List<Integer> dig1 = new ArrayList<>();
-        dig1.add(3);
-        dig1.add(5);
-        dig1.add(7);
+        List<Integer> dig0 = new ArrayList<>(Arrays.asList(1,5,9));
+        List<Integer> dig1 = new ArrayList<>(Arrays.asList(3,5,7));
         if (board.containsAll(dig0) || board.containsAll(dig1)) {
             return true;
         }
