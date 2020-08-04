@@ -125,26 +125,63 @@ class TicTacToe {
      * @param playerPosition   - index's of the position used by the user.
      * @param position         - index's of the position used by the CPU.
      */
-    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> cpuPosition) {
+    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> playerPosition,
+            List<Integer> cpuPosition) {
 
-        Random r = new Random();
-        int index = r.nextInt(9) + 1;
+        int index = generateRandom(9) + 1;
         while (occupiedPosition.contains(index)) {
-            index = r.nextInt(9) + 1;
+            index = generateRandom(9) + 1;
         }
 
         int firstIndex = index;
 
-        //calling a function to get a winning chance.
+        // calling a function to get a winning chance.
         index = possibleBestPosition(cpuPosition, occupiedPosition, index);
         if (firstIndex != index) {
             return index;
         }
 
-        //calling a function to stop my opponent from winning.
+        // calling a function to stop my opponent from winning.
         index = possibleBestPosition(playerPosition, occupiedPosition, index);
         if (firstIndex != index) {
             return index;
+        }
+
+        // calling a function to get a corner index if not filled.
+        index = possibleCornerPosition(occupiedPosition, index);
+        if (firstIndex != index) {
+            return index;
+        }
+
+        return index;
+    }
+
+    /**
+     * function to return random number.
+     * 
+     * @param maxRandom - greatest random number to be generated.
+     */
+    private static int generateRandom(int maxRandom) {
+        Random r = new Random();
+        return r.nextInt(maxRandom);
+    }
+
+    private static int possibleCornerPosition(List<Integer> occupiedPosition, int index) {
+
+        int[] corner = { 1, 3, 7, 9 };
+        List<Integer> random = new ArrayList<>();
+
+        while (random.size() != 4) {
+            int r = generateRandom(4);
+            while (random.contains(r)) {
+                r = generateRandom(4);
+            }
+            if (occupiedPosition.contains(corner[r])) {
+                random.add(r);
+                break;
+            } else {
+                return corner[r];
+            }
         }
 
         return index;
@@ -367,9 +404,9 @@ class PlayingTTT {
     /**
      * function to to set symbol as per players requirement.
      * 
-     * @param board - board with the cells block used as the game board.
+     * @param board  - board with the cells block used as the game board.
      * @param symbol - a letter which is to be set on board.
-     * @param index - place where the symbol will be set.
+     * @param index  - place where the symbol will be set.
      */
     public String[][] settingSymbol(String[][] board, String symbol, int index) {
         index -= 1;
