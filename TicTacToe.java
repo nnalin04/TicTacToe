@@ -1,47 +1,48 @@
 import java.util.*;
 
 class TicTacToe {
-
     public static void main(String[] args) {
         // creating the board as an 3*3 array
-        String[][] board = new String[3][3];
+        String[][] board = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } };
 
         // creating an object of PlayingTTT class.
         PlayingTTT play = new PlayingTTT();
 
-        Scanner sc = new Scanner(System.in);
-
         // calling the function to play the game.
-        initializeTheGame(board, play, sc);
-
-        sc.close();
+        play.initializeTheGame(board);
     }
+}
 
-    //
+class PlayingTTT {
+
+    // list of index for player position cpu position and position occupied by both
+    // of them.
+    List<Integer> PlayerPosition = new ArrayList<>();
+    List<Integer> cpuPosition = new ArrayList<>();
+    List<Integer> occupiedPosition = new ArrayList<>();
+
+    //list of condition to help decide the the next best move to win.
+    List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
+    List<Integer> side = new ArrayList<>(Arrays.asList(2, 4, 6, 8));
+    List<List<Integer>> winningConditionList = new ArrayList<>();
+
+    String[] SymbolArray = new String[2];
+    List<Integer> random = new ArrayList<>();
+
     /**
      * function to play the game.
      * 
      * @param board - board with the index used as the game board.
-     * @param play  - object of the PlayingTTT class to use its method.
-     * @param sc    - object of scanner class to take input from the user.
      */
-    public static void initializeTheGame(String[][] board, PlayingTTT play, Scanner sc) {
+    public void initializeTheGame(String[][] board) {
 
-        // list of index for player position cpu position and position occupied by both
-        // of them.
-        List<Integer> PlayerPosition = new ArrayList<>();
-        List<Integer> cpuPosition = new ArrayList<>();
-        List<Integer> occupiedPosition = new ArrayList<>();
-
-        // calling the function to set the re-set the board.
-        play.settingBoard(board);
+        Scanner sc = new Scanner(System.in);
 
         // calling a function to decide who will play first amd there symbol choice.
-        boolean toss = play.decidingToss();
+        boolean toss = decidingToss();
 
         // calling a function to choose the player and cpu symbol.
-        String[] SymbolArray = new String[2];
-        SymbolArray = play.choosingSymbol(toss, sc, SymbolArray);
+        SymbolArray = choosingSymbol(toss, sc, SymbolArray);
         String playerSymbol = SymbolArray[0];
         String cpuSymbol = SymbolArray[1];
 
@@ -51,40 +52,41 @@ class TicTacToe {
 
         // playing till either of the competitor win or tie.
         do {
-            // if toss is true it will be player turn.
+            // if toss is 'true' it will be player turn and if it if 'false' it will be
+            // cpu's.
             if (toss) {
 
                 // calling a function to display the board.
-                play.displayBoard(board);
+                displayBoard(board);
 
                 // calling a function to get cell index from the user.
-                int index = checkingIfPresent(sc, occupiedPosition);
+                int index = playerNextMove(sc);
 
                 occupiedPosition.add(index);
                 PlayerPosition.add(index);
 
                 // calling a function for setting the symbol at the given index on the board.
-                board = play.settingSymbol(board, playerSymbol, index);
+                board = settingSymbol(board, playerSymbol, index);
 
                 // calling a function to check for the winning condition.
-                playerResult = play.checkForWin(PlayerPosition);
+                playerResult = checkForWin(PlayerPosition);
                 if (playerResult) {
                     System.out.println("\nPlayer Wins");
                     break;
                 }
-
             } else {
+
                 // calling a function to get cell index from the cpu.
-                int index = cpuMove(occupiedPosition, PlayerPosition, cpuPosition);
+                int index = cpuNextMove(occupiedPosition, PlayerPosition, cpuPosition);
 
                 cpuPosition.add(index);
                 occupiedPosition.add(index);
 
                 // calling a function for setting the symbol at the given index on the board.
-                board = play.settingSymbol(board, cpuSymbol, index);
+                board = settingSymbol(board, cpuSymbol, index);
 
                 // calling a function to check for the winning condition.
-                cpuResult = play.checkForWin(cpuPosition);
+                cpuResult = checkForWin(cpuPosition);
                 if (cpuResult) {
                     System.out.println("\ncpu Wins");
                     break;
@@ -98,166 +100,8 @@ class TicTacToe {
             }
             toss = !toss;
         } while (playerResult == false && cpuResult == false);
-
-        play.displayBoard(board);
-    }
-
-    /**
-     * function to get the cell index from the user.
-     * 
-     * @param sc               - object of scanner class, takes input from the user.
-     * @param occupiedPosition - index's of the occupiedPosition in the game board.
-     */
-    private static int checkingIfPresent(Scanner sc, List<Integer> occupiedPosition) {
-        System.out.println("enter a the position you want to place your symbol, between 1-9");
-        int index = sc.nextInt();
-        while (occupiedPosition.contains(index)) {
-            System.out.println("enter a different position " + index + " is already present");
-            index = sc.nextInt();
-        }
-        return index;
-    }
-
-    /**
-     * function to get the cell index from the computer.
-     * 
-     * @param occupiedPosition - index's of the occupiedPosition in the game board.
-     * @param playerPosition   - index's of the position used by the user.
-     * @param position         - index's of the position used by the CPU.
-     */
-    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> playerPosition,
-            List<Integer> cpuPosition) {
-
-        int index = 0;
-        List<Integer> random = new ArrayList<>();
-        List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
-        List<Integer> side = new ArrayList<>(Arrays.asList(2, 4, 6, 8));
-
-        int firstIndex = index;
-
-        // calling a function to get a winning chance.
-        index = possibleBestPosition(cpuPosition, occupiedPosition, index);
-        if (firstIndex != index) {
-            return index;
-        }
-
-        // calling a function to stop my opponent from winning.
-        index = possibleBestPosition(playerPosition, occupiedPosition, index);
-        if (firstIndex != index) {
-            return index;
-        }
-
-        // calling a function to get a corner index if not filled.
-        while (occupiedPosition.containsAll(corner) == false) {
-            index = possiblePosition(occupiedPosition, random, index, corner);
-            if (firstIndex != index) {
-                return index;
-            }
-        }
-
-        if (occupiedPosition.contains(5) == false) {
-            return 5;
-        }
-
-        // calling a function to get a corner index if not filled.
-        while (occupiedPosition.containsAll(corner) == false) {
-            index = possiblePosition(occupiedPosition, random, index, side);
-            if (firstIndex != index) {
-                return index;
-            }
-        }
-        return index;
-    }
-
-    /**
-     * function to return random number.
-     * 
-     * @param maxRandom - greatest random number to be generated.
-     */
-    private static int generateRandom(int maxRandom) {
-        Random r = new Random();
-        return r.nextInt(maxRandom);
-    }
-
-    /**
-     * function to decide in index for corner or side.
-     * 
-     * @param occupiedPosition - index's of the occupiedPosition in the game board.
-     * @param random           - list of random index for corner and side.
-     * @param index            - given index.
-     * @param cornerOrIndex    - decide which to check position for.
-     */
-    private static int possiblePosition(List<Integer> occupiedPosition, List<Integer> random, int index,
-            List<Integer> toCompare) {
-
-        random.clear();
-
-        while (random.size() <= 4) {
-            int r = generateRandom(4);
-            while (random.contains(r)) {
-                r = generateRandom(4);
-            }
-            if (occupiedPosition.contains(toCompare.get(r))) {
-                random.add(r);
-                break;
-            } else {
-                return toCompare.get(r);
-            }
-        }
-        return index;
-    }
-
-    /**
-     * function to get the best possible index where the symbol can be placed on the
-     * board to win or stop the opponent from winning.
-     * 
-     * @param position         - list of index from which we have to compare.
-     * @param occupiedPosition - index's of the occupiedPosition in the game board.
-     * @param index            - taking index for comparison.
-     */
-    private static int possibleBestPosition(List<Integer> position, List<Integer> occupiedPosition, int index) {
-        int[][] winning = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 1, 4, 7 }, { 2, 5, 8 }, { 3, 6, 9 }, { 1, 5, 9 },
-                { 3, 5, 7 } };
-
-        // variables to calculate index and count the number of matching element.
-        int k = 0;        
-
-        while (k < 8) {
-            int matchCount = 0;
-            List<Integer> unMatched = new ArrayList<>();
-            for (int i = 0; i < winning[k].length; i++) {
-                if (occupiedPosition.contains(winning[k][i])) {
-                    if (position.contains(winning[k][i])) {
-                        matchCount++;
-                    }
-                } else {
-                    unMatched.add(winning[k][i]);
-                }
-            }
-            if (matchCount == 2 && unMatched.size() == 1) {
-                index = unMatched.get(0);
-                break;
-            }
-            k++;
-        }
-        return index;
-    }
-
-}
-
-class PlayingTTT {
-
-    /**
-     * function to get the cell index from the user.
-     * 
-     * @param board - board with the index used as the game board.
-     */
-    public void settingBoard(String[][] board) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                board[i][j] = " ";
-            }
-        }
+        displayBoard(board);
+        sc.close();
     }
 
     /**
@@ -320,39 +164,170 @@ class PlayingTTT {
 
         }
         System.out.println("\n" + str);
+
+    }
+
+    /**
+     * function to get the cell index from the user.
+     * 
+     * @param sc - object of scanner class, takes input from the user.
+     */
+    public int playerNextMove(Scanner sc) {
+        System.out.println("enter a the position you want to place your symbol, between 1-9");
+        int index = sc.nextInt();
+        while (occupiedPosition.contains(index)) {
+            System.out.println("enter a different position " + index + " is already present");
+            index = sc.nextInt();
+        }
+        return index;
+    }
+
+    /**
+     * function to get the cell index from the computer.
+     * 
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param playerPosition   - index's of the position used by the user.
+     * @param position         - index's of the position used by the CPU.
+     */
+    public int cpuNextMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> cpuPosition) {
+
+        int index = 0;
+
+        int firstIndex = index;
+
+        // calling a function to get a winning chance.
+        index = possibleBestPosition(cpuPosition, occupiedPosition, index);
+        if (firstIndex != index) {
+            return index;
+        }
+
+        // calling a function to stop my opponent from winning.
+        index = possibleBestPosition(playerPosition, occupiedPosition, index);
+        if (firstIndex != index) {
+            return index;
+        }
+
+        // calling a function to get a corner index if not filled.
+        while (occupiedPosition.containsAll(corner) == false) {
+            index = possiblePosition(occupiedPosition, random, index, corner);
+            if (firstIndex != index) {
+                return index;
+            }
+        }
+
+        if (occupiedPosition.contains(5) == false) {
+            return 5;
+        }
+
+        // calling a function to get a corner index if not filled.
+        while (occupiedPosition.containsAll(corner) == false) {
+            index = possiblePosition(occupiedPosition, random, index, side);
+            if (firstIndex != index) {
+                return index;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * function to return random number.
+     * 
+     * @param maxRandom - greatest random number to be generated.
+     */
+    private int generateRandom(int maxRandom) {
+        Random r = new Random();
+        return r.nextInt(maxRandom);
+    }
+
+    /**
+     * function to decide in index for corner or side.
+     * 
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param random           - list of random index for corner and side.
+     * @param index            - given index.
+     * @param cornerOrIndex    - decide which to check position for.
+     */
+    private int possiblePosition(List<Integer> occupiedPosition, List<Integer> random, int index,
+            List<Integer> toCompare) {
+
+        random.clear();
+        while (random.size() <= 4) {
+            int r = generateRandom(4);
+            while (random.contains(r)) {
+                r = generateRandom(4);
+            }
+            if (occupiedPosition.contains(toCompare.get(r))) {
+                random.add(r);
+                break;
+            } else {
+                return toCompare.get(r);
+            }
+        }
+        return index;
+    }
+
+    /**
+     * function to get the best possible index where the symbol can be placed on the
+     * board to win or stop the opponent from winning.
+     * 
+     * @param position         - list of index from which we have to compare.
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param index            - taking index for comparison.
+     */
+    private int possibleBestPosition(List<Integer> position, List<Integer> occupiedPosition, int index) {
+        List<List<Integer>> winning = winningCondition();
+        // variables to calculate index and count the number of matching element.
+        int k = 0;
+
+        while (k < 8) {
+            int matchCount = 0;
+            List<Integer> unMatched = new ArrayList<>();
+            for (int i = 0; i < winning.get(k).size(); i++) {
+                if (occupiedPosition.contains(winning.get(k).get(i))) {
+                    if (position.contains(winning.get(k).get(i))) {
+                        matchCount++;
+                    }
+                } else {
+                    unMatched.add(winning.get(k).get(i));
+                }
+            }
+            if (matchCount == 2 && unMatched.size() == 1) {
+                index = unMatched.get(0);
+                break;
+            }
+            k++;
+        }
+        return index;
     }
 
     /**
      * function to check for the winning condition.
-     * 
-     * @param board - board with the index used as the game board.
      */
     public boolean checkForWin(List<Integer> board) {
-        List<Integer> row0 = new ArrayList<>(Arrays.asList(1, 2, 3));
-        List<Integer> row1 = new ArrayList<>(Arrays.asList(4, 5, 6));
-        List<Integer> row2 = new ArrayList<>(Arrays.asList(7, 8, 9));
-        List<Integer> col0 = new ArrayList<>(Arrays.asList(1, 4, 7));
-        List<Integer> col1 = new ArrayList<>(Arrays.asList(2, 5, 8));
-        List<Integer> col2 = new ArrayList<>(Arrays.asList(3, 6, 9));
-        List<Integer> dig0 = new ArrayList<>(Arrays.asList(1, 5, 9));
-        List<Integer> dig1 = new ArrayList<>(Arrays.asList(3, 5, 7));
 
-        List<List<Integer>> win = new ArrayList<>();
-        win.add(row0);
-        win.add(row1);
-        win.add(row2);
-        win.add(col0);
-        win.add(col1);
-        win.add(col2);
-        win.add(dig0);
-        win.add(dig1);
-
-        for(int i=0;i<win.size();i++){
-            if(board.containsAll(win.get(i))){
+        List<List<Integer>> win = winningCondition();
+        for (int i = 0; i < win.size(); i++) {
+            if (board.containsAll(win.get(i))) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * function to generate a List of winning condition.
+     */
+    public List<List<Integer>> winningCondition() {
+        winningConditionList.add(Arrays.asList(1, 2, 3));
+        winningConditionList.add(Arrays.asList(4, 5, 6));
+        winningConditionList.add(Arrays.asList(7, 8, 9));
+        winningConditionList.add(Arrays.asList(1, 4, 7));
+        winningConditionList.add(Arrays.asList(2, 5, 8));
+        winningConditionList.add(Arrays.asList(3, 6, 9));
+        winningConditionList.add(Arrays.asList(1, 5, 9));
+        winningConditionList.add(Arrays.asList(3, 5, 7));
+
+        return winningConditionList;
     }
 
     /**
