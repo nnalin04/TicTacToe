@@ -153,6 +153,10 @@ class TicTacToe {
             return index;
         }
 
+        if(occupiedPosition.contains(5) == false){
+            return 5;
+        }
+
         return index;
     }
 
