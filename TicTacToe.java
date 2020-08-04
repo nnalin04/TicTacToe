@@ -137,14 +137,12 @@ class TicTacToe {
         // calling a function to get a winning chance.
         index = possibleBestPosition(cpuPosition, occupiedPosition, index);
         if (firstIndex != index) {
-            System.out.println("for win: " + index);
             return index;
         }
 
         // calling a function to stop my opponent from winning.
         index = possibleBestPosition(playerPosition, occupiedPosition, index);
         if (firstIndex != index) {
-            System.out.println("to block: " + index);
             return index;
         }
 
@@ -152,13 +150,11 @@ class TicTacToe {
         while (occupiedPosition.containsAll(corner) == false) {
             index = possiblePosition(occupiedPosition, random, index, corner);
             if (firstIndex != index) {
-                System.out.println("fill corner: " + index);
                 return index;
             }
         }
 
         if (occupiedPosition.contains(5) == false) {
-            System.out.println("fill the center: " + 5);
             return 5;
         }
 
@@ -166,12 +162,9 @@ class TicTacToe {
         while (occupiedPosition.containsAll(corner) == false) {
             index = possiblePosition(occupiedPosition, random, index, side);
             if (firstIndex != index) {
-                System.out.println("fill the side: " + index);
                 return index;
             }
         }        
-
-        System.out.println("no option selected");
         return index;
     }
 
