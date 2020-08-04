@@ -6,20 +6,29 @@ class TicTacToe {
         // creating the board as an 3*3 array
         String[][] board = new String[3][3];
 
-        // calling the function to play the game.
-        playingTheGame(board);
-    }
-
-    // function to play the game.
-    public static void playingTheGame(String[][] board) {
-
         // creating an object of PlayingTTT class.
         PlayingTTT play = new PlayingTTT();
 
         Scanner sc = new Scanner(System.in);
 
+        // calling the function to play the game.
+        playingTheGame(board, play, sc);
+
+        sc.close();
+    }
+
+    //
+    /**
+     * function to play the game.
+     * 
+     * @param board - it is the board with the index used as the game board.
+     * @param play  - object of the PlayingTTT class to use its method.
+     * @param sc    - object of scanner class to take input from the user.
+     */
+    public static void playingTheGame(String[][] board, PlayingTTT play, Scanner sc) {
+
         List<Integer> PlayerPosition = new ArrayList<>();
-        List<Integer> cpuPosition = new ArrayList<>();
+        List<Integer> position = new ArrayList<>();
         List<Integer> occupiedPosition = new ArrayList<>();
 
         // calling the function to set the re-set the board.
@@ -40,22 +49,22 @@ class TicTacToe {
 
         // playing till either of the competitor win or tie.
         do {
-            //if toss is true it will be player turn.
+            // if toss is true it will be player turn.
             if (toss) {
 
                 // calling a function to display the board.
                 play.displayBoard(board);
 
-                //calling a function to get cell index from the user.
+                // calling a function to get cell index from the user.
                 int index = checkingIfPresent(sc, occupiedPosition);
 
                 occupiedPosition.add(index);
                 PlayerPosition.add(index);
 
-                //calling a function for setting the symbol at the given index.
+                // calling a function for setting the symbol at the given index.
                 board = play.settingSymbol(board, playerSymbol, index);
-                
-                //calling a function to check for the winning condition.
+
+                // calling a function to check for the winning condition.
                 playerResult = play.checkForWin(PlayerPosition);
                 if (playerResult) {
                     System.out.println("Player Wins");
@@ -64,19 +73,20 @@ class TicTacToe {
                 toss = false;
 
             } else {
-                //calling a function to get cell index from the cpu.
-                int index = cpuMove(occupiedPosition,PlayerPosition,cpuPosition);
+                // calling a function to get cell index from the cpu.
+                int index = cpuMove(occupiedPosition, PlayerPosition, position);
 
-                cpuPosition.add(index);
+                position.add(index);
                 occupiedPosition.add(index);
 
-                //calling a function for setting the symbol at the given index.
+                // calling a function for setting the symbol at the given index.
                 board = play.settingSymbol(board, cpuSymbol, index);
 
-                //calling a function to check for the winning condition.
-                cpuResult = play.checkForWin(cpuPosition);
+                // calling a function to check for the winning condition.
+                cpuResult = play.checkForWin(position);
                 if (cpuResult) {
                     System.out.println("cpu Wins");
+                    System.out.println(position);
                     break;
                 }
                 toss = true;
@@ -90,12 +100,13 @@ class TicTacToe {
         } while (playerResult == false && cpuResult == false);
 
         play.displayBoard(board);
-
-        sc.close();
     }
 
     /**
      * function to get the cell index from the user.
+     * 
+     * @param sc               - object of scanner class, takes input from the user.
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
      */
     private static int checkingIfPresent(Scanner sc, List<Integer> occupiedPosition) {
         System.out.println("enter a the position you want to place your symbol, between 1-9");
@@ -109,18 +120,68 @@ class TicTacToe {
 
     /**
      * function to get the cell index from the computer.
-     * @param cpuPosition
+     * 
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param playerPosition   - index's of the position used by the user.
+     * @param position         - index's of the position used by the CPU.
      */
-    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> cpuPosition) {
-        int[][] winning = {{1,2,3},{4,5,6},{7,8,9},{1,4,7},{2,5,8},{3,6,9},{1,5,9},{3,5,7}};
+    private static int cpuMove(List<Integer> occupiedPosition, List<Integer> PlayerPosition, List<Integer> position) {
 
         Random r = new Random();
         int index = r.nextInt(9) + 1;
         while (occupiedPosition.contains(index)) {
             index = r.nextInt(9) + 1;
         }
+
+        int firstIndex = index;
+
+        index = possibleBestPosition(position, occupiedPosition, index);
+        if (firstIndex != index) {
+            return index;
+        }
+
         return index;
     }
+
+    /**
+     * function to get the best possible index where the symbol can be placed on the
+     * board to win or stop the opponent from winning.
+     * 
+     * @param position         - list of index from which we have to compare.
+     * @param occupiedPosition - index's of the occupiedPosition in the game board.
+     * @param index            - taking index for comparison.
+     */
+    private static int possibleBestPosition(List<Integer> position, List<Integer> occupiedPosition, int index) {
+        int[][] winning = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 1, 4, 7 }, { 2, 5, 8 }, { 3, 6, 9 }, { 1, 5, 9 },
+                { 3, 5, 7 } };
+
+        // variables to calculate index and count the number of matching element.
+        int k = 0;
+        List<Integer> unMatched = new ArrayList<>();
+
+        while (k < 8) {
+            int matchCount = 0;
+            unMatched.clear();
+
+            for (int i = 0; i < winning[k].length; i++) {
+                if (occupiedPosition.contains(winning[k][i])) {
+                    if (position.contains(winning[k][i])) {
+                        matchCount++;
+                    }
+                } else {
+                    unMatched.add(winning[k][i]);
+                }
+            }
+
+            if (matchCount == 2 && unMatched.size() == 1) {
+                index = unMatched.get(0);
+                break;
+            }
+            k++;
+        }
+        return index;
+    }
+
 }
 
 class PlayingTTT {
@@ -144,11 +205,12 @@ class PlayingTTT {
             System.out.println("Enter a symbol");
             String symbol = sc.nextLine();
             if (symbol == "X") {
-                symbolArray[0] = "X";
-                symbolArray[1] = "O";
+                symbolArray[0] = "O";
+                symbolArray[1] = "X";
+
             } else {
                 symbolArray[0] = "X";
-                symbolArray[1] = "X";
+                symbolArray[1] = "O";
             }
         } else {
             if (decidingToss()) {
