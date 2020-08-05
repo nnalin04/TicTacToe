@@ -21,7 +21,7 @@ class PlayingTTT {
     List<Integer> cpuPosition = new ArrayList<>();
     List<Integer> occupiedPosition = new ArrayList<>();
 
-    //list of condition to help decide the the next best move to win.
+    // list of condition to help decide the the next best move to win.
     List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
     List<Integer> side = new ArrayList<>(Arrays.asList(2, 4, 6, 8));
     List<List<Integer>> winningConditionList = new ArrayList<>();
@@ -220,7 +220,7 @@ class PlayingTTT {
         }
 
         // calling a function to get a corner index if not filled.
-        while (occupiedPosition.containsAll(corner) == false) {
+        while (occupiedPosition.containsAll(side) == false) {
             index = possiblePosition(occupiedPosition, random, index, side);
             if (firstIndex != index) {
                 return index;
