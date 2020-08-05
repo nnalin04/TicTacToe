@@ -17,13 +17,11 @@ class TicTacToe {
 
 class PlayingTTT {
 
-    // list of index for player position cpu position and position occupied by both
+    // list of index for player position computer position and position occupied by both
     // of them.
     List<Integer> PlayerPosition = new ArrayList<>();
-    List<Integer> cpuPosition = new ArrayList<>();
+    List<Integer> computerPosition = new ArrayList<>();
     List<Integer> occupiedPosition = new ArrayList<>();
-
-    Map<><> 
 
     // list of condition to help decide the the next best move to win.
     List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
@@ -33,8 +31,8 @@ class PlayingTTT {
     char[] SymbolArray = new char[2];
     List<Integer> random = new ArrayList<>();
 
-     //function to re-set the board.
-     public void settingBoard(final char[][] board) {
+    // function to re-set the board.
+    public void settingBoard(final char[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 board[i][j] = ' ';
@@ -54,28 +52,28 @@ class PlayingTTT {
         // calling a function to decide who will play first amd there symbol choice.
         boolean toss = Toss();
 
-        // calling a function to choose the player and cpu symbol.
+        // calling a function to choose the player and computer symbol.
         SymbolArray = choosingSymbol(toss, sc, SymbolArray);
         char playerSymbol = SymbolArray[0];
-        char cpuSymbol = SymbolArray[1];
+        char computerSymbol = SymbolArray[1];
 
         if (toss) {
             System.out.println("\" " + playerSymbol + " \" was chosen by player");
-            System.out.println("\" " + cpuSymbol + " \" will be the symbol for the CPU");
+            System.out.println("\" " + computerSymbol + " \" will be the symbol for the computer");
         } else {
             System.out.println("\nits the computer turn");
-            System.out.println("\" " + cpuSymbol + " \" was chosen by CPU");
+            System.out.println("\" " + computerSymbol + " \" was chosen by computer");
             System.out.println("\" " + playerSymbol + " \" will be your symbol");
         }
 
         // setting winning condition for both opponents.
         boolean playerResult = false;
-        boolean cpuResult = false;
+        boolean computerResult = false;
 
         // playing till either of the competitor win or tie.
         do {
             // if toss is 'true' it will be player turn and if it if 'false' it will be
-            // cpu's.
+            // computer's.
             if (toss) {
 
                 displayBoard(board);
@@ -96,19 +94,19 @@ class PlayingTTT {
                 }
             } else {
 
-                // calling a function to get cell index from the cpu.
-                int index = cpuNextMove(occupiedPosition, PlayerPosition, cpuPosition);
+                // calling a function to get cell index from the computer.
+                int index = computerNextMove(occupiedPosition, PlayerPosition, computerPosition);
 
-                cpuPosition.add(index);
+                computerPosition.add(index);
                 occupiedPosition.add(index);
 
                 // calling a function for setting the symbol at the given index on the board.
-                board = setSymbolOnBoard(board, cpuSymbol, index);
+                board = setSymbolOnBoard(board, computerSymbol, index);
 
                 // calling a function to check for the winning condition.
-                cpuResult = checkForWin(cpuPosition);
-                if (cpuResult) {
-                    System.out.println("\ncpu Wins");
+                computerResult = checkForWin(computerPosition);
+                if (computerResult) {
+                    System.out.println("\ncomputer Wins");
                     break;
                 }
             }
@@ -119,7 +117,7 @@ class PlayingTTT {
                 break;
             }
             toss = !toss;
-        } while (playerResult == false && cpuResult == false);
+        } while (playerResult == false && computerResult == false);
         displayBoard(board);
         sc.close();
     }
@@ -218,16 +216,16 @@ class PlayingTTT {
      * 
      * @param occupiedPosition - index's of the occupiedPosition in the game board.
      * @param playerPosition   - index's of the position used by the user.
-     * @param position         - index's of the position used by the CPU.
+     * @param position         - index's of the position used by the computer.
      */
-    public int cpuNextMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> cpuPosition) {
+    public int computerNextMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> computerPosition) {
 
         int index = 0;
 
         int firstIndex = index;
 
         // calling a function to get a winning chance.
-        index = possibleBestPosition(cpuPosition, occupiedPosition, index);
+        index = possibleBestPosition(computerPosition, occupiedPosition, index);
         if (firstIndex != index) {
             return index;
         }
@@ -343,14 +341,14 @@ class PlayingTTT {
     }
 
     public List<List<Integer>> winningConditionList() {
-        winningConditionList.add(Arrays.asList(1, 2, 3));   //top row index value.
-        winningConditionList.add(Arrays.asList(4, 5, 6));   //middle row index value.
-        winningConditionList.add(Arrays.asList(7, 8, 9));   //last row index value.
-        winningConditionList.add(Arrays.asList(1, 4, 7));   //first colum index value.
-        winningConditionList.add(Arrays.asList(2, 5, 8));   //second colum index value.
-        winningConditionList.add(Arrays.asList(3, 6, 9));   //third colum index value.
-        winningConditionList.add(Arrays.asList(1, 5, 9));   //first diagonal.
-        winningConditionList.add(Arrays.asList(3, 5, 7));   //second diagonal.
+        winningConditionList.add(Arrays.asList(1, 2, 3)); // top row index value.
+        winningConditionList.add(Arrays.asList(4, 5, 6)); // middle row index value.
+        winningConditionList.add(Arrays.asList(7, 8, 9)); // last row index value.
+        winningConditionList.add(Arrays.asList(1, 4, 7)); // first colum index value.
+        winningConditionList.add(Arrays.asList(2, 5, 8)); // second colum index value.
+        winningConditionList.add(Arrays.asList(3, 6, 9)); // third colum index value.
+        winningConditionList.add(Arrays.asList(1, 5, 9)); // first diagonal.
+        winningConditionList.add(Arrays.asList(3, 5, 7)); // second diagonal.
 
         return winningConditionList;
     }
