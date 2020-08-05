@@ -3,7 +3,7 @@ import java.util.*;
 class TicTacToe {
     public static void main(String[] args) {
         // creating the board as an 3*3 array
-        String[][] board = { { " ", " ", " " }, { " ", " ", " " }, { " ", " ", " " } };
+        char[][] board = { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
 
         // creating an object of PlayingTTT class.
         PlayingTTT play = new PlayingTTT();
@@ -26,7 +26,7 @@ class PlayingTTT {
     List<Integer> side = new ArrayList<>(Arrays.asList(2, 4, 6, 8));
     List<List<Integer>> winningConditionList = new ArrayList<>();
 
-    String[] SymbolArray = new String[2];
+    char[] SymbolArray = new char[2];
     List<Integer> random = new ArrayList<>();
 
     /**
@@ -34,17 +34,26 @@ class PlayingTTT {
      * 
      * @param board - board with the index used as the game board.
      */
-    public void initializeTheGame(String[][] board) {
+    public void initializeTheGame(char[][] board) {
 
         Scanner sc = new Scanner(System.in);
 
         // calling a function to decide who will play first amd there symbol choice.
-        boolean toss = decidingToss();
+        boolean toss = Toss();
 
         // calling a function to choose the player and cpu symbol.
         SymbolArray = choosingSymbol(toss, sc, SymbolArray);
-        String playerSymbol = SymbolArray[0];
-        String cpuSymbol = SymbolArray[1];
+        char playerSymbol = SymbolArray[0];
+        char cpuSymbol = SymbolArray[1];
+
+        if (toss) {
+            System.out.println("\" " + playerSymbol + " \" was chosen by player");
+            System.out.println("\" " + cpuSymbol + " \" will be the symbol for the CPU");
+        } else {
+            System.out.println("\nits the computer turn");
+            System.out.println("\" " + cpuSymbol + " \" was chosen by CPU");
+            System.out.println("\" " + playerSymbol + " \" will be your symbol");
+        }
 
         // setting winning condition for both opponents.
         boolean playerResult = false;
@@ -56,17 +65,15 @@ class PlayingTTT {
             // cpu's.
             if (toss) {
 
-                // calling a function to display the board.
                 displayBoard(board);
 
-                // calling a function to get cell index from the user.
                 int index = playerNextMove(sc);
 
                 occupiedPosition.add(index);
                 PlayerPosition.add(index);
 
                 // calling a function for setting the symbol at the given index on the board.
-                board = settingSymbol(board, playerSymbol, index);
+                board = setSymbolOnBoard(board, playerSymbol, index);
 
                 // calling a function to check for the winning condition.
                 playerResult = checkForWin(PlayerPosition);
@@ -83,7 +90,7 @@ class PlayingTTT {
                 occupiedPosition.add(index);
 
                 // calling a function for setting the symbol at the given index on the board.
-                board = settingSymbol(board, cpuSymbol, index);
+                board = setSymbolOnBoard(board, cpuSymbol, index);
 
                 // calling a function to check for the winning condition.
                 cpuResult = checkForWin(cpuPosition);
@@ -107,38 +114,49 @@ class PlayingTTT {
     /**
      * function to chose a symbol for the computer or the user.
      * 
-     * @param toss        - decide who will chose the first symbol.
-     * @param sc          - object of scanner class to take input from the user.
-     * @param symbolArray - array to take symbol as an input.
+     * @param toss         - decide who will chose the first symbol.
+     * @param sc           - object of scanner class to take input from the user.
+     * @param symbolArray2 - array to take symbol as an input.
      */
-    public String[] choosingSymbol(boolean toss, Scanner sc, String[] symbolArray) {
+    public char[] choosingSymbol(boolean toss, Scanner sc, char[] symbolArray2) {
         if (toss) {
+            System.out.println("\nits the player turn");
             System.out.println("Enter a symbol");
-            String symbol = sc.nextLine();
-            if (symbol == "X") {
-                symbolArray[0] = "O";
-                symbolArray[1] = "X";
+            char symbol = sc.next().charAt(0);
 
+            if (symbol == 'x') {
+                symbol = 'X';
+            }
+            if (symbol == 'o') {
+                symbol = 'O';
+            }
+            while (symbol != 'X' && symbol != 'O') {
+                System.out.println("Enter the correct Symbol");
+                symbol = sc.next().charAt(0);
+            }
+            if (symbol == 'X') {
+                symbolArray2[0] = 'X';
+                symbolArray2[1] = 'O';
             } else {
-                symbolArray[0] = "X";
-                symbolArray[1] = "O";
+                symbolArray2[0] = 'O';
+                symbolArray2[1] = 'X';
             }
         } else {
-            if (decidingToss()) {
-                symbolArray[0] = "X";
-                symbolArray[1] = "O";
+            if (Toss()) {
+                symbolArray2[0] = 'X';
+                symbolArray2[1] = 'O';
             } else {
-                symbolArray[0] = "O";
-                symbolArray[1] = "X";
+                symbolArray2[0] = 'O';
+                symbolArray2[1] = 'X';
             }
         }
-        return symbolArray;
+        return symbolArray2;
     }
 
     /**
      * function to create a random toss
      */
-    public boolean decidingToss() {
+    public boolean Toss() {
         Random r = new Random();
         return r.nextBoolean();
     }
@@ -148,7 +166,7 @@ class PlayingTTT {
      * 
      * @param board - board with the cells block used as the game board.
      */
-    public void displayBoard(String[][] board) {
+    public void displayBoard(char[][] board) {
         String str = "";
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -333,15 +351,15 @@ class PlayingTTT {
     /**
      * function to to set symbol as per players requirement.
      * 
-     * @param board  - board with the cells block used as the game board.
-     * @param symbol - a letter which is to be set on board.
-     * @param index  - place where the symbol will be set.
+     * @param board        - board with the cells block used as the game board.
+     * @param playerSymbol - a letter which is to be set on board.
+     * @param index        - place where the symbol will be set.
      */
-    public String[][] settingSymbol(String[][] board, String symbol, int index) {
+    public char[][] setSymbolOnBoard(char[][] board, char playerSymbol, int index) {
         index -= 1;
         int x = (int) Math.floor(index / 3);
         int y = index % 3;
-        board[x][y] = symbol;
+        board[x][y] = playerSymbol;
         return board;
     }
 }
