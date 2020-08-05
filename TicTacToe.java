@@ -23,8 +23,6 @@ class PlayingTTT {
     List<Integer> cpuPosition = new ArrayList<>();
     List<Integer> occupiedPosition = new ArrayList<>();
 
-    Map<><> 
-
     // list of condition to help decide the the next best move to win.
     List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
     List<Integer> side = new ArrayList<>(Arrays.asList(2, 4, 6, 8));
