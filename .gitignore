@@ -1,0 +1,3 @@
+# adding git ignore for class file.
+*class
+*.txt
