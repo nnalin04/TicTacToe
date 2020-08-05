@@ -3,7 +3,7 @@ import java.util.*;
 class TicTacToe {
     public static void main(String[] args) {
         // creating the board as an 3*3 array
-        char[][] board = new char[3][3];       
+        char[][] board = new char[3][3];
 
         // creating an object of PlayingTTT class.
         PlayingTTT play = new PlayingTTT();
@@ -22,6 +22,8 @@ class PlayingTTT {
     List<Integer> PlayerPosition = new ArrayList<>();
     List<Integer> cpuPosition = new ArrayList<>();
     List<Integer> occupiedPosition = new ArrayList<>();
+
+    Map<><> 
 
     // list of condition to help decide the the next best move to win.
     List<Integer> corner = new ArrayList<>(Arrays.asList(1, 3, 7, 9));
@@ -341,14 +343,14 @@ class PlayingTTT {
     }
 
     public List<List<Integer>> winningConditionList() {
-        winningConditionList.add(Arrays.asList(1, 2, 3));
-        winningConditionList.add(Arrays.asList(4, 5, 6));
-        winningConditionList.add(Arrays.asList(7, 8, 9));
-        winningConditionList.add(Arrays.asList(1, 4, 7));
-        winningConditionList.add(Arrays.asList(2, 5, 8));
-        winningConditionList.add(Arrays.asList(3, 6, 9));
-        winningConditionList.add(Arrays.asList(1, 5, 9));
-        winningConditionList.add(Arrays.asList(3, 5, 7));
+        winningConditionList.add(Arrays.asList(1, 2, 3));   //top row index value.
+        winningConditionList.add(Arrays.asList(4, 5, 6));   //middle row index value.
+        winningConditionList.add(Arrays.asList(7, 8, 9));   //last row index value.
+        winningConditionList.add(Arrays.asList(1, 4, 7));   //first colum index value.
+        winningConditionList.add(Arrays.asList(2, 5, 8));   //second colum index value.
+        winningConditionList.add(Arrays.asList(3, 6, 9));   //third colum index value.
+        winningConditionList.add(Arrays.asList(1, 5, 9));   //first diagonal.
+        winningConditionList.add(Arrays.asList(3, 5, 7));   //second diagonal.
 
         return winningConditionList;
     }
