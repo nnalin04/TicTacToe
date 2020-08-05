@@ -1,6 +1,6 @@
 import java.util.*;
 
-class TicTacToe {
+public class TicTacToe {
     public static void main(String[] args) {
         // creating the board as an 3*3 array
         char[][] board = new char[3][3];
@@ -17,8 +17,8 @@ class TicTacToe {
 
 class PlayingTTT {
 
-    // list of index for player position computer position and position occupied by both
-    // of them.
+    // list of index for player position computer position and position occupied by
+    // both of them.
     List<Integer> PlayerPosition = new ArrayList<>();
     List<Integer> computerPosition = new ArrayList<>();
     List<Integer> occupiedPosition = new ArrayList<>();
