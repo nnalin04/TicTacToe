@@ -3,10 +3,12 @@ import java.util.*;
 class TicTacToe {
     public static void main(String[] args) {
         // creating the board as an 3*3 array
-        char[][] board = { { ' ', ' ', ' ' }, { ' ', ' ', ' ' }, { ' ', ' ', ' ' } };
+        char[][] board = new char[3][3];       
 
         // creating an object of PlayingTTT class.
         PlayingTTT play = new PlayingTTT();
+
+        play.settingBoard(board);
 
         // calling the function to play the game.
         play.initializeTheGame(board);
@@ -28,6 +30,15 @@ class PlayingTTT {
 
     char[] SymbolArray = new char[2];
     List<Integer> random = new ArrayList<>();
+
+     //function to re-set the board.
+     public void settingBoard(final char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                board[i][j] = ' ';
+            }
+        }
+    }
 
     /**
      * function to play the game.
@@ -293,7 +304,7 @@ class PlayingTTT {
      * @param index            - taking index for comparison.
      */
     private int possibleBestPosition(List<Integer> position, List<Integer> occupiedPosition, int index) {
-        List<List<Integer>> winning = winningCondition();
+        List<List<Integer>> winning = winningConditionList();
         // variables to calculate index and count the number of matching element.
         int k = 0;
 
@@ -318,12 +329,9 @@ class PlayingTTT {
         return index;
     }
 
-    /**
-     * function to check for the winning condition.
-     */
     public boolean checkForWin(List<Integer> board) {
 
-        List<List<Integer>> win = winningCondition();
+        List<List<Integer>> win = winningConditionList();
         for (int i = 0; i < win.size(); i++) {
             if (board.containsAll(win.get(i))) {
                 return true;
@@ -332,10 +340,7 @@ class PlayingTTT {
         return false;
     }
 
-    /**
-     * function to generate a List of winning condition.
-     */
-    public List<List<Integer>> winningCondition() {
+    public List<List<Integer>> winningConditionList() {
         winningConditionList.add(Arrays.asList(1, 2, 3));
         winningConditionList.add(Arrays.asList(4, 5, 6));
         winningConditionList.add(Arrays.asList(7, 8, 9));
