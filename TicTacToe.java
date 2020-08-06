@@ -50,7 +50,7 @@ class PlayingTTT {
         Scanner sc = new Scanner(System.in);
 
         // calling a function to decide who will play first amd there symbol choice.
-        boolean toss = Toss();
+        boolean toss = getRandomToss();
 
         // calling a function to choose the player and computer symbol.
         SymbolArray = choosingSymbol(toss, sc, SymbolArray);
@@ -153,7 +153,7 @@ class PlayingTTT {
                 symbolArray2[1] = 'X';
             }
         } else {
-            if (Toss()) {
+            if (getRandomToss()) {
                 symbolArray2[0] = 'X';
                 symbolArray2[1] = 'O';
             } else {
@@ -167,7 +167,7 @@ class PlayingTTT {
     /**
      * function to create a random toss
      */
-    public boolean Toss() {
+    public boolean getRandomToss() {
         Random r = new Random();
         return r.nextBoolean();
     }
@@ -218,8 +218,7 @@ class PlayingTTT {
      * @param playerPosition   - index's of the position used by the user.
      * @param position         - index's of the position used by the computer.
      */
-    public int computerNextMove(List<Integer> occupiedPosition, List<Integer> playerPosition,
-            List<Integer> computerPosition) {
+    public int computerNextMove(List<Integer> occupiedPosition, List<Integer> playerPosition, List<Integer> computerPosition) {
 
         int index = 0;
 
